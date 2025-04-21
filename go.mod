@@ -1,6 +1,6 @@
 module github.com/yourname/sui-graph
 
-go 1.23.4
+go 1.24.3
 
 require (
 	github.com/fsnotify/fsnotify v1.8.0 // indirect
