@@ -3,12 +3,39 @@ name: goreleaser
 on:
   push:
     tags:
-      - '*'
+      - 'v*'  # Semantic versioning only
 
 permissions:
   contents: write
+  id-token: write  # for sigstore, future OIDC signing
 
 jobs:
   release:
-    uses: babylonlabs-io/.github/.github/workflows/reusable_go_releaser.yml@v0.11.2
-    secrets: inherit
+    name: GoReleaser Release
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24.2'
+
+      - name: Validate tag format
+        run: |
+          [[ "${GITHUB_REF##*/}" =~ ^v[0-9]+\\.[0-9]+\\.[0-9]+(-.+)?$ ]] || \
+            (echo "::error ::Tag must follow semver (vX.Y.Z)"; exit 1)
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          distribution: goreleaser
+          version: '~> v2'
+          args: release --clean --timeout=15m
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
