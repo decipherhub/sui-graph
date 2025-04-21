@@ -1,0 +1,90 @@
+run:
+  timeout: 5m
+  skip-dirs:
+    - e2etest
+  tests: true
+
+linters:
+  disable-all: true
+  enable:
+    - asasalint
+    - asciicheck
+    - bidichk
+    - bodyclose
+    - containedctx
+    - contextcheck
+    - decorder
+    - dogsled
+    - durationcheck
+    - errcheck
+    - errchkjson
+    - errname
+    - errorlint
+    - exhaustive
+    - forbidigo
+    - forcetypeassert
+    - goconst
+    - gocritic
+    - gocyclo
+    - goheader
+    - gomodguard
+    - goprintffuncname
+    - gosimple
+    - govet
+    - grouper
+    - importas
+    - ineffassign
+    - loggercheck
+    - maintidx
+    - makezero
+    - misspell
+    - nakedret
+    - nilerr
+    - nlreturn
+    - noctx
+    - nonamedreturns
+    - nosprintfhostport
+    - paralleltest
+    - reassign
+    - revive
+    - rowserrcheck
+    - sqlclosecheck
+    - staticcheck
+    - stylecheck
+    - tenv
+    - testableexamples
+    - tparallel
+    - typecheck
+    - unconvert
+    - unparam
+    - usestdlibvars
+    - unused
+    - wastedassign
+    - whitespace
+    - wrapcheck
+
+linters-settings:
+  gocyclo:
+    min-complexity: 15
+  misspell:
+    locale: US
+  revive:
+    config: .revive.toml
+  goheader:
+    values:
+      Year: 2024
+      Owner: your-org-name
+
+issues:
+  max-same-issues: 0
+  exclude-use-default: false
+  exclude-rules:
+    - path: _test\.go$
+      linters:
+        - gocyclo
+        - errcheck
+        - dupl
+        - gosec
+    - path-except: _test\.go$
+      linters:
+        - forbidigo

@@ -1,0 +1,84 @@
+version: 2
+
+project_name: sui-graph
+
+dist: dist
+
+builds:
+  - id: sui-graphd-linux-amd64
+    main: ./cmd/sui-graphd/main.go
+    binary: sui-graphd
+    goos:
+      - linux
+    goarch:
+      - amd64
+    env:
+      - GO111MODULE=on
+    flags:
+      - -mod=readonly
+      - -trimpath
+    ldflags:
+      - -w -s
+    tags:
+      - netgo
+
+  - id: sui-graphd-darwin-arm64
+    main: ./cmd/sui-graphd/main.go
+    binary: sui-graphd
+    goos:
+      - darwin
+    goarch:
+      - arm64
+    env:
+      - GO111MODULE=on
+      - CGO_ENABLED=1
+    flags:
+      - -mod=readonly
+      - -trimpath
+    ldflags:
+      - -w -s
+    tags:
+      - netgo
+
+archives:
+  - id: zipped
+    builds:
+      - sui-graphd-linux-amd64
+    name_template: "{{.ProjectName}}-{{ .Version }}-{{ .Os }}-{{ .Arch }}"
+    format: tar.gz
+    files:
+      - none*
+  - id: binaries
+    builds:
+      - sui-graphd-linux-amd64
+    name_template: "{{.ProjectName}}-{{ .Version }}-{{ .Os }}-{{ .Arch }}"
+    format: binary
+    files:
+      - none*
+  - id: zipped-arm64
+    builds:
+      - sui-graphd-darwin-arm64
+    name_template: "{{.ProjectName}}-{{ .Version }}-{{ .Os }}-{{ .Arch }}"
+    format: tar.gz
+    files:
+      - none*
+  - id: binaries-arm64
+    builds:
+      - sui-graphd-darwin-arm64
+    name_template: "{{.ProjectName}}-{{ .Version }}-{{ .Os }}-{{ .Arch }}"
+    format: binary
+    files:
+      - none*
+
+checksum:
+  name_template: "{{ .ProjectName }}_{{ .Version }}_checksums.txt"
+  algorithm: sha256
+
+release:
+  github:
+    owner: decipherhub
+    name: sui-graph
+
+changelog:
+  disable: true
+
